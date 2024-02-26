@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Placeholder</title>
+{% endblock title %}
+
+{% block container %}
+
+    <!-- source: https://medium.com/@MakeComputerScienceGreatAgain/understanding-flexbox-a-comprehensive-guide-992bcd5f04de -->
+    <style>
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .flex-item {
+            flex: 1; /* Equal width for all items */
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+
+    <div class="container mt-5">
+        {% if all_blogs %}
+            <div class="flex-container">
+                {% for obj in all_blogs %}
+                    <div class="flex-item">
+                        <figure>
+                            <a href="#"><img src="{{obj.main_img.url}}" class="shadow-lg" alt="{{obj.title}}" width=320 height=120></a>
+                            <figcaption>{{obj.title}}</figcaption>
+                        </figure>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        
+        <nav aria-label="Page navigation">
+            <!-- source: https://stackoverflow.com/questions/32355009/changing-pagination-colour-bootstrap -->
+            <style>
+                .pagination > li > a
+                {
+                    background-color: grey;
+                    color: white;
+                }
+    
+                .pagination > li > a:focus,
+                .pagination > li > a:hover,
+                .pagination > li > span:focus,
+                .pagination > li > span:hover
+                {
+                    color: #5a5a5a;
+                    background-color: white;
+                    border-color: #ddd;
+                }
+            </style>
+            
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% if all_blogs.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ all_blogs.previous_page_number }}">{{ all_blogs.previous_page_number }}</a></li>
+                {% endif %}
+                    <li class="page-item"><a class="page-link" href="?page={{ all_blogs.number }}">{{ all_blogs.number }}</a></li>
+                {% if all_blogs.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ all_blogs.next_page_number }}">{{ all_blogs.next_page_number }}</a></li>
+                {% endif %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ all_blogs.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+
+{% endblock container %}
