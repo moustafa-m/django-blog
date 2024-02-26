@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>{{blog.title}}</title>
+{% endblock title %}
+
+{% block container %}
+    <div class="container">
+        <h1>{{blog.title}}</h1>
+        <h2>Created by {{blog.owner.username}} on {{blog.date}}</h2>
+        <br>
+
+        <figure>
+            <img style="max-width: 1280px; max-height: 720px" src="{{blog.main_img.url}}" class="shadow-lg" alt="{{blog.title}}">
+            <!-- add a caption property to images
+                might want to make a separate model for them...
+            -->
+            <figcaption>{{blog.title}}</figcaption>
+        </figure>
+
+        <p>{{blog.text}}</p>
+    </div>
+{% endblock container %}

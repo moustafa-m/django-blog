@@ -28,7 +28,7 @@
                 {% for obj in all_blogs %}
                     <div class="flex-item">
                         <figure>
-                            <a href="#"><img src="{{obj.main_img.url}}" class="shadow-lg" alt="{{obj.title}}" width=320 height=120></a>
+                            <a href={% url 'blog_article' obj.id %}><img src="{{obj.main_img.url}}" class="shadow-lg" alt="{{obj.title}}" width=320 height=120></a>
                             <figcaption>{{obj.title}}</figcaption>
                         </figure>
                     </div>

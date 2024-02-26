@@ -16,3 +16,10 @@ def discover(request):
         "all_blogs" : all_blogs,
     }
     return render(request, 'discover.html', ctxt)
+
+def renderBlog(request, id):
+    blog = get_object_or_404(BlogModel, pk=id)
+    ctxt = {
+        'blog' : blog
+    }
+    return render(request, 'blog.html', ctxt)

@@ -23,7 +23,8 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', blog_views.index, name="index"),
-    path('blogs/', blog_views.discover, name="discover")
+    path('blogs/', blog_views.discover, name="discover"),
+    path('blog/', include('blog_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
