@@ -28,8 +28,8 @@
                 {% for obj in all_blogs %}
                     <div class="flex-item">
                         <figure>
-                            <a href={% url 'blog_article' obj.id %}><img src="{{obj.main_img.url}}" class="shadow-lg" alt="{{obj.title}}" width=320 height=120></a>
-                            <figcaption>{{obj.title}}</figcaption>
+                            <a href={% url 'blog_article' obj.slug %}><img src="{{obj.main_img.url}}" class="shadow-lg" alt="{{obj.title}}" width=320 height=120></a>
+                            <figcaption>{{obj.title}} <br> {{obj.owner.username}} {{obj.date}}</figcaption>
                         </figure>
                     </div>
                 {% endfor %}

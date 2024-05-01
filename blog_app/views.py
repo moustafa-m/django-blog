@@ -17,8 +17,8 @@ def discover(request):
     }
     return render(request, 'discover.html', ctxt)
 
-def renderBlog(request, id):
-    blog = get_object_or_404(BlogModel, pk=id)
+def renderBlog(request, slug):
+    blog = BlogModel.objects.get(slug=slug)
     ctxt = {
         'blog' : blog
     }
