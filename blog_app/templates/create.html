@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    <title>Create - Django Blog</title>
+{% endblock title %}
+
+{% block container %}
+    <div class="container">
+        <h1>Create a Blog</h1>
+        <form method="POST" class="mt-5 col-10" action="">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <style>
+                .form-text {
+                    color: white;
+                }
+            </style>
+
+            {{ form.media }}
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+
+    </div>
+{% endblock container %}

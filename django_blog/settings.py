@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'users',
     'crispy_forms',
     'crispy_bootstrap5',
+    'django_summernote',
 ]
 
 MIDDLEWARE = [
@@ -121,6 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = path.join(BASE_DIR, 'var', 'static')
 STATICFILES_DIRS = [path.join(BASE_DIR, 'static')]
 
 # Default primary key field type
@@ -136,3 +138,9 @@ LOGIN_URL = 'login'
 
 MEDIA_ROOT = path.join(BASE_DIR, 'media')
 MEDIA_URL =  'media/'
+
+SUMMERNOTE_THEME = 'bs5'
+
+SUMMERNOTE_CONFIG = {
+    'attachment_filesize_limit': (1024*1024*5), # specify the file size
+}
