@@ -33,9 +33,9 @@
                     </ul>
 
                     {% if user.is_authenticated %}
-                    <span class="navbar-text">
-                        Welcome {{ user.username }}
-                    </span>
+                    <a href="{% url 'profile' %}">
+                        <button type="button" class="btn btn-primary ms-3 me-3">{{ user.username }}</button>
+                    </a>
                     <a href="{% url 'logout' %}">
                         <button type="button" class="btn btn-primary ms-3 me-3">Logout</button>
                     </a>
