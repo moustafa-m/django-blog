@@ -52,8 +52,6 @@ def renderBlog(request, slug):
 
 @login_required
 def editBlog(request, slug):
-    print('######')
-    print(slug)
     blog = BlogModel.objects.get(slug=slug)
     if not (request.user == blog.owner or request.user.is_superuser):
         messages.error(request, "Access Denied")
