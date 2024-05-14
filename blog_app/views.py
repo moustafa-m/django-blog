@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.core.paginator import Paginator
 from blog_app.models import BlogModel
 from blog_app.forms import BlogForm
-import bleach
 
 # Create your views here.
 def index(request):
