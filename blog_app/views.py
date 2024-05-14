@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.core.paginator import Paginator
 from blog_app.models import BlogModel
-from blog_app.forms import BlogForm
+from blog_app.forms import BlogForm, SearchForm
 
 # Create your views here.
 def index(request):
@@ -30,12 +30,25 @@ def create(request):
 
 def discover(request):
     all_blogs = BlogModel.objects.all()
+    
+    form = SearchForm(request.GET or None)
+    title = request.GET.get('title_filter')
+    category = request.GET.get('category_select')
+    if title != '' and title is not None:
+        all_blogs = all_blogs.filter(title__contains=title)
+    
+    if category != '' and category is not None:
+        all_blogs = all_blogs.filter(category__exact=category)
+    
     paginator = Paginator(all_blogs, 9)
     page = request.GET.get('page')
     all_blogs = paginator.get_page(page)
 
     ctxt = {
-        "all_blogs" : all_blogs,
+        'all_blogs' : all_blogs,
+        'form': form,
+        # 'title_filter': title,
+        # 'category_select': category,
     }
     return render(request, 'discover.html', ctxt)
 

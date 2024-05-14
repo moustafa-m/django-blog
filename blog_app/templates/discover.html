@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     <title>Discover - Django Blog</title>
 {% endblock title %}
 
 {% block container %}
+    <div class="container mt-4 col-lg-2">
+        <form method="GET" class="mt-2">
+            {{form|crispy}}
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
     {% include 'blog_pages.html' %}
 {% endblock container %}

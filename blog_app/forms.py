@@ -12,4 +12,13 @@ class BlogForm(forms.ModelForm):
         }
     
     title = SummernoteTextField()
-        
+
+class SearchForm(forms.Form):
+    title_filter = forms.CharField(label='Search Term:', required=False)
+    
+    # TODO: choices list is not dynamic
+    category_select = forms.ChoiceField(label='Category:', required=False, choices=(('', ''),
+                                                                                    ('HW', 'Hardware'),
+                                                                                    ('SW', 'Software'),
+                                                                                    ('B', 'Benchmarks'),
+                                                                                    ('MISC', 'Miscellaneous')))
