@@ -18,6 +18,12 @@
             <figcaption>{{blog.title}}</figcaption>
         </figure>
 
+        {% if is_owner %}
+            <a href="{% url 'edit_blog' slug %}">
+                <button type="button" class="btn btn-primary ms-3 me-3">Edit Blog</button>
+            </a>
+        {% endif %}
+
         <p>{{blog.text|safe}}</p>
     </div>
 {% endblock container %}
