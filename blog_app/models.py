@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.template.defaultfilters import slugify
 
 # Create your models here.
@@ -14,7 +15,7 @@ class BlogModel(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     title = models.CharField(max_length=30, default="", unique=True)
     text = models.TextField()
-    date = models.DateTimeField()
+    date = models.DateTimeField(default=timezone.now)
     slug = models.CharField(max_length=30, null=True, blank=True)
     
     main_img = models.ImageField(upload_to=getFileName, default="default.png")
