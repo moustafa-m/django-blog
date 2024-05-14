@@ -1,7 +1,62 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     <title>Welcome to Django Blog</title>
 {% endblock title %}
 
 <!-- TODO: Fill in contents for homepage -->
+{% block container %}
+    <div class="container mt-4">
+        <h1>{{ index_text }}</h1>
+    </div>
+
+    <div class="container mt-5">
+        {% if not user.is_authenticated %}
+        <div class="row mt-5">
+            <div class="btn-toolbar" style="justify-content: center; display: flex;">
+                <a href={% url 'register' %}><button type="button" class="btn shadow btn-success btn-lg">Register</button></a>
+                <a href={% url 'login' %}><button type="button" class="btn shadow btn-success btn-lg ms-4">Login</button></a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-lg-4">
+                <h2>Browse Blogs</h2>
+                <figure>
+                    <a href="{% url 'discover' %}"><img src="{% static 'images/towfiqu-barbhuiya-Q69veNk1iJQ-unsplash.jpg' %}" class="shadow-lg" alt="myapp" width=400 height=250></a>
+                    <figcaption>
+                        Photo by <a href="https://unsplash.com/@glenncarstenspeters?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Glenn Carstens-Peters</a> on 
+                        <a href="https://unsplash.com/photos/person-using-macbook-pro-npxXWgQ33ZQ?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
+                    </figcaption>
+                </figure>
+            </div>
+
+            {% if user.is_authenticated %}
+                <div class="col-lg-4">
+                    <h2>Create a Blog</h2>
+                    <figure>
+                        <a href="{% url 'create' %}"><img src="{% static 'images/florian-klauer-mk7D-4UCfmg-unsplash.jpg' %}" class="shadow-lg" alt="contact" width=400 height=250></a>
+                        <figcaption>
+                            Photo by <a href="https://unsplash.com/@florianklauer?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Florian Klauer</a> on 
+                            <a href="https://unsplash.com/photos/black-fayorit-typewriter-with-printer-paper-mk7D-4UCfmg?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
+                        </figcaption>
+                    </figure>
+                </div>
+
+                <div class="col-lg-4">
+                    <h2>View Your Profile</h2>
+                    <figure>
+                        <a href="{% url 'profile' %}"><img src="{% static 'images/glenn-carstens-peters-npxXWgQ33ZQ-unsplash.jpg' %}" class="shadow-lg" alt="contact" width=400 height=250></a>
+                        <figcaption>
+                            Photo by <a href="https://unsplash.com/@glenncarstenspeters?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Glenn Carstens-Peters</a> on 
+                            <a href="https://unsplash.com/photos/person-using-macbook-pro-npxXWgQ33ZQ?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
+                        </figcaption>
+                    </figure>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock container %}
+

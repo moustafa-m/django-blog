@@ -8,7 +8,11 @@ from blog_app.forms import BlogForm, SearchForm
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html', {})
+    index_text = 'Welcome to Django Blog'
+    ctxt = {
+        'index_text': index_text,
+    }
+    return render(request, 'index.html', ctxt)
 
 @login_required
 def create(request):
