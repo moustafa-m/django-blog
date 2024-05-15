@@ -52,5 +52,13 @@ class BlogModel(models.Model):
             self.__original_title = self.title
         
         return super().save(force_insert, force_update, *args, **kwargs)
-        
-    
+
+class CommentsModel(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    blog = models.ForeignKey(BlogModel, on_delete=models.CASCADE, related_name='comments')
+    text = models.TextField()
+    date = models.DateTimeField(default=timezone.now)
+    last_edit = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.owner.username + " - " + self.blog.title + " - id: " + str(self.pk)

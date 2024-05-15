@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     <title>{{blog.title}}</title>
@@ -25,5 +26,89 @@
         {% endif %}
 
         <p>{{blog.text|safe}}</p>
+        <br>
+        
+        <div class="mt-5">
+            <h3> Comments: </h3>
+            
+            <!--comments to be displayed-->
+            {% for comment in comments %}
+                <p> {{comment.owner}} <span class="small" style="color: grey"> {{comment.date}} </span>
+                    {% if comment.last_edit %}
+                        <span class="small" style="color: grey"> (Edited: {{comment.last_edit}}) </span>
+                    {% endif %}
+                    <br>
+                    {{comment.text}}
+                    {% if is_admin %}
+                        <br>
+                        {% comment %} TODO: add delete link {% endcomment %}
+                        <button type="button" class="btn btn-primary btn-sm">Delete</button>
+                    {% endif %}
+                </p>
+            {% endfor %}
+            
+            <!--Page number selection-->
+            <nav aria-label="Page navigation">
+                <!-- source: https://stackoverflow.com/questions/32355009/changing-pagination-colour-bootstrap -->
+                <style>
+                    .pagination > li > a
+                    {
+                        background-color: grey;
+                        color: white;
+                    }
+
+                    .pagination > li > a:focus,
+                    .pagination > li > a:hover,
+                    .pagination > li > span:focus,
+                    .pagination > li > span:hover
+                    {
+                        color: #5a5a5a;
+                        background-color: white;
+                        border-color: #ddd;
+                    }
+                </style>
+                
+                <ul class="pagination justify-content-left">
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="First">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% if comments.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">{{ comments.previous_page_number }}</a></li>
+                    {% endif %}
+                        <li class="page-item"><a class="page-link" href="?page={{ comments.number }}">{{ comments.number }}</a></li>
+                    {% if comments.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">{{ comments.next_page_number }}</a></li>
+                    {% endif %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ comments.paginator.num_pages }}" aria-label="Last">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!--Comment form-->
+            {% if user.is_authenticated %}
+                <form method="POST" class="mt-5 col-10" action="">
+                    {% csrf_token %}
+                    <style>
+                        .form-text {
+                            color: white;
+                        }
+                        .form-control {
+                            width: 75%;
+                            line-height: 1.0;
+                        }
+                        .asteriskField {
+                            display: none;
+                        }
+                    </style>
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+            {% endif %}
+        </div>
     </div>
 {% endblock container %}

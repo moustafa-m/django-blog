@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.core.paginator import Paginator
-from blog_app.models import BlogModel
-from blog_app.forms import BlogForm, SearchForm
+from blog_app.models import BlogModel, CommentsModel
+from blog_app.forms import BlogForm, SearchForm, CommentForm
 
 # Create your views here.
 def index(request):
@@ -57,12 +57,32 @@ def discover(request):
     return render(request, 'discover.html', ctxt)
 
 def renderBlog(request, slug):
+    if request.method ==  "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form_instance = form.save(commit=False)
+            form_instance.owner = request.user
+            form_instance.blog = BlogModel.objects.get(slug=slug)
+            form_instance.save()
+            return redirect(renderBlog, slug=slug)
+    else:
+        form = CommentForm()
+    
     blog = BlogModel.objects.get(slug=slug)
-    is_owner = (request.user == blog.owner or request.user.is_superuser)
+    comments = CommentsModel.objects.filter(blog=blog)
+    paginator = Paginator(comments, 5)
+    page = request.GET.get('page')
+    comments = paginator.get_page(page)
+    
+    is_admin = request.user.is_superuser
+    is_owner = (request.user == blog.owner or is_admin)
     ctxt = {
         'blog' : blog,
         'is_owner': is_owner,
-        'slug': slug
+        'is_admin': is_admin,
+        'slug': slug,
+        'form': form,
+        'comments': comments,
     }
     return render(request, 'blog.html', ctxt)
 
