@@ -1,7 +1,7 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-  <head>
+    <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -27,16 +27,15 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'discover' %}">Discover</a>
                         </li>
-                        <!-- TODO: login should be required for this -->
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'create' %}">Create</a>
                         </li>
                     </ul>
 
                     {% if user.is_authenticated %}
-                    <span class="navbar-text">
-                        Welcome {{ user.username }}
-                    </span>
+                    <a href="{% url 'profile' %}">
+                        <button type="button" class="btn btn-primary ms-3 me-3">{{ user.username }}</button>
+                    </a>
                     <a href="{% url 'logout' %}">
                         <button type="button" class="btn btn-primary ms-3 me-3">Logout</button>
                     </a>

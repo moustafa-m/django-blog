@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
 from django.contrib import auth
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from users.forms import UserRegistrationForm
 from django_blog import settings
+from blog_app.models import BlogModel
 
 def register(request):
     if request.method == "POST":
@@ -31,7 +34,26 @@ def login(request):
         else:
             messages.warning(request, "Invalid username/password!")
     return render(request, 'login.html', {})
-  
+
 def logout(request):
     auth.logout(request)
     return render(request, 'logout.html')
+
+@login_required
+def profile(request):
+    all_blogs = BlogModel.objects.filter(owner=request.user)
+    paginator = Paginator(all_blogs, 7)
+    page = request.GET.get('page')
+    all_blogs = paginator.get_page(page)
+    
+    username = request.user.get_username()
+    date_joined = request.user.date_joined
+    last_login = request.user.last_login
+    
+    ctxt = {
+        'username': username,
+        'all_blogs': all_blogs,
+        "date_joined": date_joined,
+        "last_login": last_login,
+    }
+    return render(request, 'profile.html', ctxt)

@@ -1,13 +1,18 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.utils import timezone
 from django.core.paginator import Paginator
 from blog_app.models import BlogModel
-from blog_app.forms import BlogForm
-import bleach
+from blog_app.forms import BlogForm, SearchForm
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html', {})
+    index_text = 'Welcome to Django Blog'
+    ctxt = {
+        'index_text': index_text,
+    }
+    return render(request, 'index.html', ctxt)
 
 @login_required
 def create(request):
@@ -29,18 +34,52 @@ def create(request):
 
 def discover(request):
     all_blogs = BlogModel.objects.all()
+    
+    form = SearchForm(request.GET or None)
+    title = request.GET.get('title_filter')
+    category = request.GET.get('category_select')
+    if title != '' and title is not None:
+        all_blogs = all_blogs.filter(title__contains=title)
+    
+    if category != '' and category is not None:
+        all_blogs = all_blogs.filter(category__exact=category)
+    
     paginator = Paginator(all_blogs, 9)
     page = request.GET.get('page')
     all_blogs = paginator.get_page(page)
 
     ctxt = {
-        "all_blogs" : all_blogs,
+        'all_blogs' : all_blogs,
+        'form': form,
+        # 'title_filter': title,
+        # 'category_select': category,
     }
     return render(request, 'discover.html', ctxt)
 
 def renderBlog(request, slug):
     blog = BlogModel.objects.get(slug=slug)
+    is_owner = (request.user == blog.owner or request.user.is_superuser)
     ctxt = {
-        'blog' : blog
+        'blog' : blog,
+        'is_owner': is_owner,
+        'slug': slug
     }
     return render(request, 'blog.html', ctxt)
+
+@login_required
+def editBlog(request, slug):
+    blog = BlogModel.objects.get(slug=slug)
+    if not (request.user == blog.owner or request.user.is_superuser):
+        messages.error(request, "Access Denied")
+        return render(request, 'index.html', {})
+    
+    form = BlogForm(request.POST or None, instance=blog)
+    if form.is_valid():
+        form_instance = form.save(commit=False)
+        form_instance.last_edit = timezone.now()
+        form_instance.save()
+        return redirect(renderBlog, slug=blog.slug)
+    ctxt = {
+        'form': form
+    }
+    return render(request, 'create.html', ctxt)
