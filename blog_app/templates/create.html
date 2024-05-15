@@ -2,12 +2,12 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    <title>Create - Django Blog</title>
+    <title>{{tab_title}}</title>
 {% endblock title %}
 
 {% block container %}
     <div class="container">
-        <h1>Create a Blog</h1>
+        <h1>{{heading}}</h1>
         <form method="POST" class="mt-5 col-10" action="">
             {% csrf_token %}
             {{ form|crispy }}

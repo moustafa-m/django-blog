@@ -19,7 +19,7 @@
             <figcaption>{{blog.title}}</figcaption>
         </figure>
 
-        {% if is_owner %}
+        {% if request.user == blog.owner %}
             <a href="{% url 'edit_blog' slug %}">
                 <button type="button" class="btn btn-primary">Edit Blog</button>
             </a>
@@ -39,10 +39,18 @@
                     {% endif %}
                     <br>
                     {{comment.text}}
-                    {% if is_admin %}
+                    {% if comment.owner == request.user or request.user.is_superuser %}
                         <br>
-                        {% comment %} TODO: add delete link {% endcomment %}
-                        <button type="button" class="btn btn-primary btn-sm">Delete</button>
+                        <div class="btn-toolbar">
+                            <a href="{% url 'edit_comment' comment.id %}">
+                                <button type="button" class="btn shadow btn-primary btn-sm">Edit</button>
+                            </a>
+                            {% if request.user.is_superuser %}
+                                <a href="{% url 'delete_comment' comment.id %}">
+                                    <button type="button" class="btn btn-primary btn-sm ms-2">Delete</button>
+                                </a>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </p>
             {% endfor %}

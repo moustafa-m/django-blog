@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.core.paginator import Paginator
+from django.http import HttpResponseForbidden
 from blog_app.models import BlogModel, CommentsModel
 from blog_app.forms import BlogForm, SearchForm, CommentForm
 
@@ -17,6 +18,8 @@ def index(request):
 
 @login_required
 def create(request):
+    tab_title = 'Create - Django Blog'
+    heading = 'Create a Blog'
     if request.method == "POST":
         form = BlogForm(request.POST)
         if form.is_valid():
@@ -29,7 +32,9 @@ def create(request):
     else:
         form = BlogForm()
     ctxt = {
-        "form" : form
+        'form': form,
+        'tab_title': tab_title,
+        'heading': heading
     }
     return render(request, 'create.html', ctxt)
 
@@ -74,18 +79,45 @@ def renderBlog(request, slug):
             return redirect(renderBlog, slug=slug)
     else:
         form = CommentForm()
-    
-    is_admin = request.user.is_superuser
-    is_owner = (request.user == blog.owner or is_admin)
     ctxt = {
         'blog' : blog,
-        'is_owner': is_owner,
-        'is_admin': is_admin,
         'slug': slug,
         'form': form,
         'comments': comments,
     }
     return render(request, 'blog.html', ctxt)
+
+@login_required
+def editComment(request, id):
+    comment = get_object_or_404(CommentsModel, pk=id)
+    if request.user != comment.owner and not request.user.is_superuser:
+        return HttpResponseForbidden()
+    
+    slug = comment.blog.slug
+    tab_title = 'Editing Comment'
+    blog_title = comment.blog.title
+    heading = 'Editing Comment made on: ' + blog_title
+    form = CommentForm(request.POST or None, instance=comment)
+    if form.is_valid():
+        form_instance = form.save(commit=False)
+        form_instance.last_edit = timezone.now()
+        form_instance.save()
+        return redirect(renderBlog, slug=slug)
+    
+    ctxt = {
+        'form': form,
+        'tab_title': tab_title,
+        'heading': heading,
+    }
+    return render(request, 'create.html', ctxt)
+
+def deleteComment(request, id):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    comment = get_object_or_404(CommentsModel, pk=id)
+    slug = comment.blog.slug
+    comment.delete()
+    return redirect(renderBlog, slug=slug)
 
 @login_required
 def editBlog(request, slug):
@@ -95,12 +127,17 @@ def editBlog(request, slug):
         return render(request, 'index.html', {})
     
     form = BlogForm(request.POST or None, instance=blog)
+    tab_title = 'Editing Blog - Django Blog'
+    heading = 'Editing Blog: ' + blog.title
     if form.is_valid():
         form_instance = form.save(commit=False)
         form_instance.last_edit = timezone.now()
         form_instance.save()
         return redirect(renderBlog, slug=blog.slug)
+    
     ctxt = {
-        'form': form
+        'form': form,
+        'tab_title': tab_title,
+        'heading': heading
     }
     return render(request, 'create.html', ctxt)
