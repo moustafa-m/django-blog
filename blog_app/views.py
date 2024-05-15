@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.core.paginator import Paginator
 from blog_app.models import BlogModel, CommentsModel
@@ -57,6 +58,12 @@ def discover(request):
     return render(request, 'discover.html', ctxt)
 
 def renderBlog(request, slug):
+    blog = get_object_or_404(BlogModel, slug=slug)
+    comments = CommentsModel.objects.filter(blog=blog)
+    paginator = Paginator(comments, 5)
+    page = request.GET.get('page')
+    comments = paginator.get_page(page)
+    
     if request.method ==  "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -67,12 +74,6 @@ def renderBlog(request, slug):
             return redirect(renderBlog, slug=slug)
     else:
         form = CommentForm()
-    
-    blog = BlogModel.objects.get(slug=slug)
-    comments = CommentsModel.objects.filter(blog=blog)
-    paginator = Paginator(comments, 5)
-    page = request.GET.get('page')
-    comments = paginator.get_page(page)
     
     is_admin = request.user.is_superuser
     is_owner = (request.user == blog.owner or is_admin)
@@ -88,7 +89,7 @@ def renderBlog(request, slug):
 
 @login_required
 def editBlog(request, slug):
-    blog = BlogModel.objects.get(slug=slug)
+    blog = get_object_or_404(BlogModel, slug=slug)
     if not (request.user == blog.owner or request.user.is_superuser):
         messages.error(request, "Access Denied")
         return render(request, 'index.html', {})
