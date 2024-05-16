@@ -1,5 +1,5 @@
 from django import forms
-from blog_app.models import BlogModel
+from blog_app.models import BlogModel, CommentsModel
 from django_summernote.fields import SummernoteTextField
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
@@ -22,3 +22,9 @@ class SearchForm(forms.Form):
                                                                                     ('SW', 'Software'),
                                                                                     ('B', 'Benchmarks'),
                                                                                     ('MISC', 'Miscellaneous')))
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = CommentsModel
+        fields = ['text']
+        labels = { 'text': 'Enter your comment:' }
