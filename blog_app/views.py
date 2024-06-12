@@ -28,7 +28,7 @@ def create(request):
             form_instance.save()
             
             slug = form_instance.slug
-            return renderBlog(request, slug)
+            return redirect(renderBlog, slug=slug)
     else:
         form = BlogForm()
     ctxt = {
